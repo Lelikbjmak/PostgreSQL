@@ -79,3 +79,19 @@ limit ( select count(*) - 1 from (select P.name from products as P
             DATE_PART('MONTH', S.date),DATE_PART('DAY', S.date))
 ) as L);
  ```
+
+## Best Practices
+
+ ```js
+select
+  name as product_name,
+  extract(year from date)::int as year,
+  extract(month from date)::int as month,
+  extract(day from date)::int as day,
+  sum(price * count) as total
+from sales_details sd
+join sales s on sd.sale_id = s.id
+join products p on sd.product_id = p.id
+group by name, rollup(year, month, day)
+order by product_name, year, month, day
+ ```
